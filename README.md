@@ -7,9 +7,9 @@ This implementation is written by Zijun Deng at the South China University of Te
 ***
 
 ## Citation
-@inproceedings{deng18recurrent,   
-&nbsp;&nbsp;&nbsp;&nbsp;  author = {Zijun Deng, Xiaowei Hu, Lei Zhu, Xuemiao Xu, Jing Qin, Guoqiang Han, and Pheng-Ann Heng},    
-&nbsp;&nbsp;&nbsp;&nbsp;  title = {R^3Net: Recurrent Residual Refinement Network for Saliency Detection},    
+@inproceedings{deng18r,   
+&nbsp;&nbsp;&nbsp;&nbsp;  author = {Deng, Zijun and Hu, Xiaowei and Zhu, Lei and Xu, Xuemiao and Qin, Jing and Han, Guoqiang and Heng, Pheng-Ann},    
+&nbsp;&nbsp;&nbsp;&nbsp;  title = {R$^{3}$Net: Recurrent Residual Refinement Network for Saliency Detection},    
 &nbsp;&nbsp;&nbsp;&nbsp;  booktitle = {IJCAI},    
 &nbsp;&nbsp;&nbsp;&nbsp;  year  = {2018}    
 }
