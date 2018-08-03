@@ -1,6 +1,6 @@
 # R<sup>3</sup>Net: Recurrent Residual Refinement Network for Saliency Detection
 
-by Zijun Deng, Xiaowei Hu, Lei Zhu, Xuemiao Xu, Jing Qin, Guoqiang Han, and Pheng-Ann Heng
+by Zijun Deng, Xiaowei Hu, Lei Zhu, Xuemiao Xu, Jing Qin, Guoqiang Han, and Pheng-Ann Heng [[paper link](https://www.ijcai.org/proceedings/2018/95)]
 
 This implementation is written by Zijun Deng at the South China University of Technology.
 
@@ -46,6 +46,7 @@ Training a model on a single GTX 1080Ti GPU takes about 70 minutes.
 
 ## Testing
 1. Set the path of five benchmark datasets in config.py
+2. Put the trained model in ckpt/R3Net
 2. Run by ```python infer.py```
 
 *Settings* of testing were gathered at the beginning of *infer.py* and you can conveniently 
