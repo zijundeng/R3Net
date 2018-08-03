@@ -18,7 +18,7 @@ torch.cuda.set_device(0)
 # the following two args specify the location of the file of trained model (pth extension)
 # you should have the pth file in the folder './$ckpt_path$/$exp_name$'
 ckpt_path = './ckpt'
-exp_name = 'R^3Net'
+exp_name = 'R3Net'
 
 args = {
     'snapshot': '6000',  # your snapshot filename (exclude extension name)
@@ -38,53 +38,53 @@ to_test = {'ecssd': ecssd_path, 'hkuis': hkuis_path, 'pascal': pascals_path, 'so
 def main():
     net = R3Net().cuda()
 
-    print
-    'load snapshot \'%s\' for testing' % args['snapshot']
+    print 'load snapshot \'%s\' for testing' % args['snapshot']
     net.load_state_dict(torch.load(os.path.join(ckpt_path, exp_name, args['snapshot'] + '.pth')))
     net.eval()
 
     results = {}
 
-    for name, root in to_test.iteritems():
+    with torch.no_grad():
 
-        precision_record, recall_record, = [AvgMeter() for _ in range(256)], [AvgMeter() for _ in range(256)]
-        mae_record = AvgMeter()
+        for name, root in to_test.iteritems():
 
-        img_list = [os.path.splitext(f)[0] for f in os.listdir(root) if f.endswith('.jpg')]
-        for idx, img_name in enumerate(img_list):
-            print
-            'predicting for %s: %d / %d' % (name, idx + 1, len(img_list))
-            check_mkdir(os.path.join(ckpt_path, exp_name, '(%s) %s_%s' % (exp_name, name, args['snapshot'])))
-
-            img = Image.open(os.path.join(root, img_name + '.jpg')).convert('RGB')
-            img_var = Variable(img_transform(img).unsqueeze(0), volatile=True).cuda()
-            prediction = net(img_var)
-            prediction = np.array(to_pil(prediction.data.squeeze(0).cpu()))
-
-            if args['crf_refine']:
-                prediction = crf_refine(np.array(img), prediction)
-
-            gt = np.array(Image.open(os.path.join(root, img_name + '.png')).convert('L'))
-            precision, recall, mae = cal_precision_recall_mae(prediction, gt)
-            for pidx, pdata in enumerate(zip(precision, recall)):
-                p, r = pdata
-                precision_record[pidx].update(p)
-                recall_record[pidx].update(r)
-            mae_record.update(mae)
+            precision_record, recall_record, = [AvgMeter() for _ in range(256)], [AvgMeter() for _ in range(256)]
+            mae_record = AvgMeter()
 
             if args['save_results']:
-                Image.fromarray(prediction).save(os.path.join(ckpt_path, exp_name, '(%s) %s_%s' % (
-                    exp_name, name, args['snapshot']), img_name + '.png'))
+                check_mkdir(os.path.join(ckpt_path, exp_name, '(%s) %s_%s' % (exp_name, name, args['snapshot'])))
 
-        fmeasure = cal_fmeasure([precord.avg for precord in precision_record],
-                                [rrecord.avg for rrecord in recall_record])
+            img_list = [os.path.splitext(f)[0] for f in os.listdir(root) if f.endswith('.jpg')]
+            for idx, img_name in enumerate(img_list):
+                print 'predicting for %s: %d / %d' % (name, idx + 1, len(img_list))
 
-        results[name] = {'fmeasure': fmeasure, 'mae': mae_record.avg}
+                img = Image.open(os.path.join(root, img_name + '.jpg')).convert('RGB')
+                img_var = Variable(img_transform(img).unsqueeze(0), volatile=True).cuda()
+                prediction = net(img_var)
+                prediction = np.array(to_pil(prediction.data.squeeze(0).cpu()))
 
-    print
-    'test results:'
-    print
-    results
+                if args['crf_refine']:
+                    prediction = crf_refine(np.array(img), prediction)
+
+                gt = np.array(Image.open(os.path.join(root, img_name + '.png')).convert('L'))
+                precision, recall, mae = cal_precision_recall_mae(prediction, gt)
+                for pidx, pdata in enumerate(zip(precision, recall)):
+                    p, r = pdata
+                    precision_record[pidx].update(p)
+                    recall_record[pidx].update(r)
+                mae_record.update(mae)
+
+                if args['save_results']:
+                    Image.fromarray(prediction).save(os.path.join(ckpt_path, exp_name, '(%s) %s_%s' % (
+                        exp_name, name, args['snapshot']), img_name + '.png'))
+
+            fmeasure = cal_fmeasure([precord.avg for precord in precision_record],
+                                    [rrecord.avg for rrecord in recall_record])
+
+            results[name] = {'fmeasure': fmeasure, 'mae': mae_record.avg}
+
+    print 'test results:'
+    print results
 
 
 if __name__ == '__main__':

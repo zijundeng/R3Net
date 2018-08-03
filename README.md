@@ -9,24 +9,22 @@ This implementation is written by Zijun Deng at the South China University of Te
 ## Citation
 @inproceedings{deng18r,   
 &nbsp;&nbsp;&nbsp;&nbsp;  author = {Deng, Zijun and Hu, Xiaowei and Zhu, Lei and Xu, Xuemiao and Qin, Jing and Han, Guoqiang and Heng, Pheng-Ann},    
-&nbsp;&nbsp;&nbsp;&nbsp;  title = {R$^{3}$Net: Recurrent Residual Refinement Network for Saliency Detection},    
+&nbsp;&nbsp;&nbsp;&nbsp;  title = {R$^{3}${N}et: Recurrent Residual Refinement Network for Saliency Detection},    
 &nbsp;&nbsp;&nbsp;&nbsp;  booktitle = {IJCAI},    
 &nbsp;&nbsp;&nbsp;&nbsp;  year  = {2018}    
 }
 
-## Saliency Maps   
-
+## Saliency Map
 The results of salienct object detection on five datasets (ECSSD, HKU-IS, PASCAL-S, SOD, DUT-OMRON) can be found 
 at [Google Drive](https://drive.google.com/open?id=1PloaTokZEfWPy8voDm7mp3yvHnXCtn2c).
 
-## Trained model
-
+## Trained Model
 You can download the trained model which is reported in our paper at 
 [Google Drive](https://drive.google.com/open?id=1Y50Cj5Ek-ZIsFj03_pRMSsvqXXeIJSaS).
 
 ## Requirement
 * Python 2.7
-* PyTorch >= 0.3.0
+* PyTorch 0.4.0
 * torchvision
 * numpy
 * Cython

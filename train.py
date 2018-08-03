@@ -21,7 +21,7 @@ torch.manual_seed(2018)
 torch.cuda.set_device(0)
 
 ckpt_path = './ckpt'
-exp_name = 'R^3Net'
+exp_name = 'R3Net'
 
 args = {
     'iter_num': 6000,
@@ -63,7 +63,7 @@ def main():
     ], momentum=args['momentum'])
 
     if len(args['snapshot']) > 0:
-        print('training resumes from ' + args['snapshot'])
+        print 'training resumes from ' + args['snapshot']
         net.load_state_dict(torch.load(os.path.join(ckpt_path, exp_name, args['snapshot'] + '.pth')))
         optimizer.load_state_dict(torch.load(os.path.join(ckpt_path, exp_name, args['snapshot'] + '_optim.pth')))
         optimizer.param_groups[0]['lr'] = 2 * args['lr']
@@ -122,8 +122,7 @@ def train(net, optimizer):
                   (curr_iter, total_loss_record.avg, loss0_record.avg, loss1_record.avg, loss2_record.avg,
                    loss3_record.avg, loss4_record.avg, loss5_record.avg, loss6_record.avg,
                    optimizer.param_groups[1]['lr'])
-            print
-            log
+            print log
             open(log_path, 'a').write(log + '\n')
 
             if curr_iter == args['iter_num']:
