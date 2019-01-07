@@ -69,12 +69,14 @@ class R3Net(nn.Module):
         layer4 = self.layer4(layer3)
 
         l0_size = layer0.size()[2:]
-        reduce_low = self.reduce_low(torch.cat((layer0,
-                                                F.upsample(layer1, size=l0_size, mode='bilinear'),
-                                                F.upsample(layer2, size=l0_size, mode='bilinear')), 1))
-        reduce_high = self.reduce_high(torch.cat((layer3,
-                                                  F.upsample(layer4, size=layer3.size()[2:], mode='bilinear')), 1))
-        reduce_high = F.upsample(reduce_high, size=l0_size, mode='bilinear')
+        reduce_low = self.reduce_low(torch.cat((
+            layer0,
+            F.upsample(layer1, size=l0_size, mode='bilinear', align_corners=True),
+            F.upsample(layer2, size=l0_size, mode='bilinear', align_corners=True)), 1))
+        reduce_high = self.reduce_high(torch.cat((
+            layer3,
+            F.upsample(layer4, size=layer3.size()[2:], mode='bilinear', align_corners=True)), 1))
+        reduce_high = F.upsample(reduce_high, size=l0_size, mode='bilinear', align_corners=True)
 
         predict0 = self.predict0(reduce_high)
         predict1 = self.predict1(torch.cat((predict0, reduce_low), 1)) + predict0
@@ -84,13 +86,13 @@ class R3Net(nn.Module):
         predict5 = self.predict5(torch.cat((predict4, reduce_low), 1)) + predict4
         predict6 = self.predict6(torch.cat((predict5, reduce_high), 1)) + predict5
 
-        predict0 = F.upsample(predict0, size=x.size()[2:], mode='bilinear')
-        predict1 = F.upsample(predict1, size=x.size()[2:], mode='bilinear')
-        predict2 = F.upsample(predict2, size=x.size()[2:], mode='bilinear')
-        predict3 = F.upsample(predict3, size=x.size()[2:], mode='bilinear')
-        predict4 = F.upsample(predict4, size=x.size()[2:], mode='bilinear')
-        predict5 = F.upsample(predict5, size=x.size()[2:], mode='bilinear')
-        predict6 = F.upsample(predict6, size=x.size()[2:], mode='bilinear')
+        predict0 = F.upsample(predict0, size=x.size()[2:], mode='bilinear', align_corners=True)
+        predict1 = F.upsample(predict1, size=x.size()[2:], mode='bilinear', align_corners=True)
+        predict2 = F.upsample(predict2, size=x.size()[2:], mode='bilinear', align_corners=True)
+        predict3 = F.upsample(predict3, size=x.size()[2:], mode='bilinear', align_corners=True)
+        predict4 = F.upsample(predict4, size=x.size()[2:], mode='bilinear', align_corners=True)
+        predict5 = F.upsample(predict5, size=x.size()[2:], mode='bilinear', align_corners=True)
+        predict6 = F.upsample(predict6, size=x.size()[2:], mode='bilinear', align_corners=True)
 
         if self.training:
             return predict0, predict1, predict2, predict3, predict4, predict5, predict6
@@ -126,5 +128,6 @@ class _ASPP(nn.Module):
         conv2 = self.conv2(x)
         conv3 = self.conv3(x)
         conv4 = self.conv4(x)
-        conv5 = F.upsample(self.conv5(F.adaptive_avg_pool2d(x, 1)), size=x.size()[2:], mode='bilinear')
+        conv5 = F.upsample(self.conv5(F.adaptive_avg_pool2d(x, 1)), size=x.size()[2:], mode='bilinear',
+                           align_corners=True)
         return self.fuse(torch.cat((conv1, conv2, conv3, conv4, conv5), 1))
